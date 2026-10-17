@@ -12,7 +12,7 @@
   <style>
     :root {
       --bg-dark: #060206;
-      --card-bg: rgba(18, 8, 18, 0.82);
+      --card-bg: rgba(18, 8, 18, 0.85);
       --gold-primary: #f59e0b;
       --gold-light: #fef08a;
       --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
@@ -39,7 +39,6 @@
       position: relative;
     }
 
-    /* רקע גוף ארוטי חושני וסאטן כהה */
     body::before {
       content: "";
       position: fixed;
@@ -140,7 +139,7 @@
       box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
     }
 
-    /* Main Card With Erotic Texture & Backing */
+    /* Main Card */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -151,7 +150,6 @@
       position: relative;
       overflow: hidden;
     }
-    /* תמונת אווירה אינטימית מובנית ברקע הכרטיס */
     .card::before {
       content: "";
       position: absolute;
@@ -183,7 +181,7 @@
     /* Free Text Section */
     .input-section { display: flex; flex-direction: column; gap: 14px; }
     .text-answer-box {
-      width: 100%; height: 115px; background: rgba(8, 3, 9, 0.75);
+      width: 100%; height: 110px; background: rgba(8, 3, 9, 0.75);
       border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 16px;
       padding: 16px; color: #fff; font-family: inherit; font-size: 1.1rem;
       outline: none; resize: none; transition: all 0.25s ease;
@@ -228,6 +226,96 @@
       transition: all 0.2s ease;
     }
     .rate-btn:active { transform: scale(0.96); background: rgba(245, 158, 11, 0.3); }
+
+    /* Live Chat Section */
+    .chat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+    }
+    .chat-header {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.95rem; font-weight: 700; color: var(--gold-light);
+      border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+      padding-bottom: 8px;
+    }
+    .chat-messages {
+      height: 190px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 6px 4px;
+      scroll-behavior: smooth;
+    }
+    .chat-bubble {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      word-break: break-word;
+      position: relative;
+    }
+    .chat-bubble.me {
+      align-self: flex-start;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.35));
+      border: 1px solid var(--border);
+      border-top-right-radius: 4px;
+      color: #fff;
+    }
+    .chat-bubble.partner {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.25), rgba(136, 19, 55, 0.4));
+      border: 1px solid rgba(225, 29, 72, 0.4);
+      border-top-left-radius: 4px;
+      color: #fff;
+    }
+    .bubble-meta {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 3px;
+      font-weight: 700;
+    }
+    .chat-input-bar {
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input {
+      flex: 1;
+      background: rgba(8, 3, 9, 0.75);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .chat-input:focus {
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+    }
+    .chat-send-btn {
+      background: var(--gold-gradient);
+      color: #111;
+      font-family: inherit;
+      font-weight: 800;
+      border: none;
+      padding: 0 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
 
     /* Buttons */
     .primary-btn {
@@ -330,6 +418,23 @@
         </div>
 
         <button class="primary-btn" id="nextBtn" onclick="requestNextQuestion()" style="margin-top:6px;">השאלה הבאה 🎲</button>
+      </div>
+    </div>
+
+    <!-- Live Chat In Room -->
+    <div class="chat-card">
+      <div class="chat-header">
+        <span>💬 צ'אט אינטימי בחדר</span>
+        <span style="font-size:0.75rem; color:#fecdd3;">דיבור חופשי בזמן אמת</span>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin:auto;">
+          כאן תוכלו להתכתב, להגיב על התשובות ולפתח את המתח ביניכם...
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <input type="text" id="chatInput" class="chat-input" placeholder="כתבו הודעה..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+        <button class="chat-send-btn" onclick="sendChatMessage()">שלח 💌</button>
       </div>
     </div>
 
@@ -447,6 +552,8 @@
         totalScore = data.totalScore;
         roundsCount = data.roundsCount;
         updateScoreBar();
+      } else if (data.type === 'chat_msg') {
+        renderChatBubble(data.sender, data.text, 'partner', data.time);
       }
     });
 
@@ -550,6 +657,37 @@
         sender: myName
       }));
       applyNewQuestion(nextIdx);
+    }
+
+    /* Live Chat Functions */
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const timeStr = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+      renderChatBubble(myName, text, 'me', timeStr);
+
+      client.publish(topic, JSON.stringify({
+        type: 'chat_msg',
+        sender: myName,
+        text: text,
+        time: timeStr
+      }));
+
+      input.value = '';
+    }
+
+    function renderChatBubble(sender, text, type, timeStr) {
+      const box = document.getElementById('chatMessages');
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble ${type}`;
+      bubble.innerHTML = `
+        <div class="bubble-meta">${sender} • ${timeStr || ''}</div>
+        <div>${text}</div>
+      `;
+      box.appendChild(bubble);
+      box.scrollTop = box.scrollHeight;
     }
   </script>
 </body>
