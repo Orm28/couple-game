@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>שאלות של תשוקה & היכרות | המשחק הזוגי</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: rgba(22, 22, 27, 0.85);
+      --gold-primary: #f59e0b;
+      --gold-light: #fde68a;
+      --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border: rgba(245, 158, 11, 0.25);
+      --border-active: rgba(245, 158, 11, 0.8);
+      --rose: #f43f5e;
+      --purple: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Assistant', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 16px;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 50% 10%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
+                        radial-gradient(circle at 10% 80%, rgba(244, 63, 94, 0.06) 0%, transparent 50%);
+    }
+    .container { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 18px; margin: auto; }
+    header { text-align: center; }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .subtitle { font-size: 0.9rem; color: var(--text-muted); }
+    
+    /* Meter */
+    .meter-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .meter-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; font-weight: 700; color: var(--gold-light); }
+    .progress-bar-bg { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.08); border-radius: 999px; overflow: hidden; }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f43f5e, #fbbf24);
+      border-radius: 999px;
+      transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .meter-caption { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+
+    /* Card */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px 20px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+    .badge {
+      align-self: flex-start;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold-light);
+      border: 1px solid var(--border);
+    }
+    .badge.fnt { background: rgba(244, 63, 94, 0.15); color: #fda4af; border-color: rgba(244, 63, 94, 0.3); }
+    .badge.int { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.3); }
+
+    .question-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.5;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      color: #fff;
+    }
+
+    /* Answers */
+    .answers-grid { display: flex; flex-direction: column; gap: 10px; }
+    .ans-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 13px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      text-align: right;
+    }
+    .ans-btn:active { transform: scale(0.98); }
+    .ans-btn.selected {
+      border-color: var(--gold-primary);
+      background: rgba(245, 158, 11, 0.18);
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+    .ans-btn.revealed-match {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    /* Waiting & Status */
+    .status-panel {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 6px; }
+    .dot.green { background: #10b981; box-shadow: 0 0 8px #10b981; }
+    .dot.yellow { background: #f59e0b; animation: pulse 1.4s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* Action Buttons */
+    .primary-btn {
+      background: var(--gold-gradient);
+      color: #111;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+      transition: all 0.2s ease;
+    }
+    .primary-btn:active { transform: scale(0.98); }
+    .share-btn {
+      background: #25D366;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    
+    /* Reveal card */
+    .reveal-box {
+      display: none;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--border-active);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .reveal-box.show { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>קשר של תשוקה</h1>
+      <p class="subtitle">המשחק המשותף שלכם בזמן אמת</p>
+    </header>
+
+    <!-- Meter -->
+    <div class="meter-box">
+      <div class="meter-header">
+        <span>מד התאמה & כימיה</span>
+        <span id="meterScore">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="meterFill"></div>
+      </div>
+      <div class="meter-caption" id="meterCaption">ענו ביחד כדי לחשוף את רמת ההתאמה!</div>
+    </div>
+
+    <!-- Active Question Card -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span class="badge" id="categoryBadge">היכרות ומסתורין</span>
+        <span style="font-size:0.8rem; color:var(--text-muted);" id="qCounter">שאלה 1 מתוך 150</span>
+      </div>
+
+      <div class="question-text" id="questionText">טוען שאלה...</div>
+
+      <div class="answers-grid" id="answersGrid">
+        <button class="ans-btn" onclick="selectAnswer(1)">
+          <span>🔥 עף/ה על זה לחלוטין!</span>
+          <span>1</span>
+        </button>
+        <button class="ans-btn" onclick="selectAnswer(2)">
+          <span>✨ מסקרן ומדליק מאוד</span>
+          <span>2</span>
+        </button>
+        <button class="ans-btn" onclick="selectAnswer(3)">
+          <span>👀 תלוי בסיטואציה ובמצב רוח</span>
+          <span>3</span>
+        </button>
+        <button class="ans-btn" onclick="selectAnswer(4)">
+          <span>🙈 פחות הכיוון שלי</span>
+          <span>4</span>
+        </button>
+      </div>
+
+      <div class="status-panel">
+        <div id="selfStatus">התשובה שלך: <span style="color:#f59e0b">טרם נבחרה</span></div>
+        <div id="partnerStatus"><span class="dot yellow"></span> ממתין לתשובה שלו...</div>
+      </div>
+
+      <div class="reveal-box" id="revealBox">
+        <div style="font-size:1.1rem; font-weight:800; color:var(--gold-light); margin-bottom:6px;" id="matchTitle">התאמה מושלמת! 🔥</div>
+        <div style="font-size:0.85rem; color:#d1d5db;" id="matchDetail">שניכם עניתם בדיוק אותו הדבר!</div>
+      </div>
+
+      <button class="primary-btn" id="nextBtn" onclick="nextQuestion()" style="display:none;">השאלה הבאה 🎲</button>
+    </div>
+
+    <!-- Room Share -->
+    <a href="#" class="share-
