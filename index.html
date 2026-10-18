@@ -12,7 +12,7 @@
   <style>
     :root {
       --bg-dark: #060206;
-      --card-bg: rgba(18, 8, 18, 0.85);
+      --card-bg: rgba(18, 8, 18, 0.88);
       --gold-primary: #f59e0b;
       --gold-light: #fef08a;
       --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
@@ -21,7 +21,7 @@
       --border: rgba(245, 158, 11, 0.35);
       --border-glow: rgba(225, 29, 72, 0.55);
       --rose: #e11d48;
-      --crimson: #881337;
+      --theme-bg-img: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop');
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -39,28 +39,44 @@
       position: relative;
     }
 
+    /* רקע חושני מתחלף */
     body::before {
       content: "";
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: 
-        radial-gradient(circle at 85% 10%, rgba(225, 29, 72, 0.28) 0%, transparent 55%),
-        radial-gradient(circle at 10% 90%, rgba(245, 158, 11, 0.2) 0%, transparent 50%),
-        linear-gradient(rgba(6, 2, 6, 0.88), rgba(6, 2, 6, 0.84)),
-        url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop');
+      background-image: 
+        radial-gradient(circle at 85% 10%, rgba(225, 29, 72, 0.3) 0%, transparent 55%),
+        radial-gradient(circle at 10% 90%, rgba(245, 158, 11, 0.22) 0%, transparent 50%),
+        linear-gradient(rgba(6, 2, 6, 0.85), rgba(6, 2, 6, 0.82)),
+        var(--theme-bg-img);
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       z-index: -2;
+      transition: background-image 0.5s ease;
       filter: saturate(1.2);
     }
 
-    .container { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 16px; margin: auto; }
+    .container { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 14px; margin: auto; }
+
+    /* Theme Switcher Bar */
+    .theme-bar {
+      display: flex; justify-content: center; gap: 8px;
+      background: rgba(20, 8, 20, 0.6); border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 999px; padding: 6px 12px; backdrop-filter: blur(8px);
+    }
+    .theme-btn {
+      background: transparent; border: none; color: #cbd5e1; font-size: 0.8rem;
+      cursor: pointer; padding: 4px 10px; border-radius: 999px; font-family: inherit; font-weight: 600;
+    }
+    .theme-btn.active {
+      background: var(--gold-gradient); color: #111; font-weight: 800;
+    }
 
     header { text-align: center; }
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       background: var(--gold-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -68,7 +84,7 @@
       text-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
       margin-bottom: 2px;
     }
-    .subtitle { font-size: 0.95rem; color: #fecdd3; font-weight: 300; letter-spacing: 0.5px; }
+    .subtitle { font-size: 0.9rem; color: #fecdd3; font-weight: 300; }
 
     /* Login Modal */
     #loginScreen {
@@ -77,33 +93,24 @@
       z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px;
     }
     .login-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
+      background: var(--card-bg); border: 1px solid var(--border);
       border-radius: 24px; padding: 30px 22px; width: 100%; max-width: 380px;
       text-align: center; display: flex; flex-direction: column; gap: 18px;
       box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(225, 29, 72, 0.25);
-      position: relative; overflow: hidden;
-    }
-    .login-card::before {
-      content: ""; position: absolute; inset: 0;
-      background: url('https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop') center/cover;
-      opacity: 0.12; z-index: -1;
     }
     .login-input {
       background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border);
       border-radius: 14px; padding: 15px; color: #fff; font-family: inherit;
       font-size: 1.15rem; text-align: center; outline: none;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
     }
     .login-input:focus { border-color: var(--gold-primary); box-shadow: 0 0 14px rgba(245, 158, 11, 0.45); }
 
-    /* Players Bar */
+    /* Players Bar & Turn Info */
     .players-bar {
       display: flex; justify-content: space-between; align-items: center;
       background: rgba(22, 10, 22, 0.7); border: 1px solid rgba(245, 158, 11, 0.25);
-      border-radius: 16px; padding: 12px 18px; font-size: 0.95rem;
+      border-radius: 16px; padding: 12px 18px; font-size: 0.9rem;
       backdrop-filter: blur(12px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
     .player-tag { display: flex; align-items: center; gap: 8px; font-weight: 700; color: #fff; }
     .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
@@ -111,18 +118,21 @@
     .dot.yellow { background: #f59e0b; animation: pulse 1.4s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+    .turn-indicator {
+      text-align: center; font-size: 0.95rem; font-weight: 800; color: var(--gold-light);
+      background: rgba(245, 158, 11, 0.12); border: 1px solid var(--border);
+      border-radius: 12px; padding: 8px;
+    }
+
     /* Heart Meter */
     .heart-meter {
       background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 22px; padding: 16px 20px; text-align: center;
-      display: flex; flex-direction: column; gap: 10px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6), inset 0 0 20px rgba(225, 29, 72, 0.2);
+      border-radius: 20px; padding: 12px 18px; text-align: center;
+      display: flex; flex-direction: column; gap: 8px; backdrop-filter: blur(14px);
     }
     .heart-icon {
-      font-size: 2.3rem; color: var(--rose);
-      display: inline-block; animation: heartbeat 1.3s infinite;
-      filter: drop-shadow(0 0 14px rgba(225, 29, 72, 0.7));
+      font-size: 2.2rem; color: var(--rose); display: inline-block; animation: heartbeat 1.3s infinite;
+      filter: drop-shadow(0 0 12px rgba(225, 29, 72, 0.7));
     }
     @keyframes heartbeat {
       0%, 100% { transform: scale(1); }
@@ -131,205 +141,140 @@
       42% { transform: scale(1.2); }
       70% { transform: scale(1); }
     }
-    .progress-bar-bg { width: 100%; height: 13px; background: rgba(255, 255, 255, 0.08); border-radius: 999px; overflow: hidden; }
+    .progress-bar-bg { width: 100%; height: 12px; background: rgba(255, 255, 255, 0.08); border-radius: 999px; overflow: hidden; }
     .progress-bar-fill {
       height: 100%; width: 0%;
       background: linear-gradient(90deg, #e11d48, #f59e0b, #fbbf24);
       border-radius: 999px; transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
     }
 
-    /* Main Card */
+    /* Card Choice Action */
+    .card-actions-box {
+      display: flex; gap: 10px;
+    }
+    .card-choice-btn {
+      flex: 1; padding: 14px 10px; border-radius: 16px; border: 1px solid var(--border);
+      background: rgba(20, 8, 20, 0.7); color: #fff; font-family: inherit; font-size: 1rem;
+      font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      transition: all 0.2s ease;
+    }
+    .card-choice-btn:active { transform: scale(0.97); }
+    .card-choice-btn.mission { border-color: rgba(225, 29, 72, 0.5); background: rgba(225, 29, 72, 0.15); }
+
+    /* Active Card */
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 26px; padding: 26px 22px;
-      display: flex; flex-direction: column; gap: 18px;
-      backdrop-filter: blur(18px);
-      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(225, 29, 72, 0.2);
-      position: relative;
-      overflow: hidden;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 26px; padding: 24px 20px; display: flex; flex-direction: column; gap: 16px;
+      backdrop-filter: blur(18px); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.85);
+      position: relative; overflow: hidden;
     }
     .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
+      content: ""; position: absolute; inset: 0;
       background: linear-gradient(180deg, rgba(14, 6, 14, 0.85) 0%, rgba(18, 6, 18, 0.95) 100%),
                   url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=900&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-      opacity: 0.28;
-      z-index: 0;
+      background-size: cover; background-position: center; opacity: 0.25; z-index: 0;
     }
     .card > * { position: relative; z-index: 1; }
 
     .badge {
       align-self: flex-start; font-size: 0.8rem; font-weight: 700;
-      padding: 6px 16px; border-radius: 999px; background: rgba(245, 158, 11, 0.22);
+      padding: 5px 14px; border-radius: 999px; background: rgba(245, 158, 11, 0.22);
       color: var(--gold-light); border: 1px solid var(--border);
-      letter-spacing: 0.4px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
-    .badge.fnt { background: rgba(225, 29, 72, 0.28); color: #fecdd3; border-color: rgba(225, 29, 72, 0.5); }
-    .badge.int { background: rgba(168, 85, 247, 0.28); color: #e9d5ff; border-color: rgba(168, 85, 247, 0.5); }
+    .badge.mission { background: rgba(225, 29, 72, 0.28); color: #fecdd3; border-color: rgba(225, 29, 72, 0.5); }
 
-    .question-text {
-      font-size: 1.35rem; font-weight: 700; line-height: 1.5; min-height: 65px;
+    .card-content-text {
+      font-size: 1.3rem; font-weight: 700; line-height: 1.5; min-height: 65px;
       color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.9);
     }
 
-    /* Free Text Section */
-    .input-section { display: flex; flex-direction: column; gap: 14px; }
+    /* Free Text & Mission Complete */
+    .input-section { display: flex; flex-direction: column; gap: 12px; }
     .text-answer-box {
-      width: 100%; height: 110px; background: rgba(8, 3, 9, 0.75);
-      border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 16px;
-      padding: 16px; color: #fff; font-family: inherit; font-size: 1.1rem;
-      outline: none; resize: none; transition: all 0.25s ease;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.7);
+      width: 100%; height: 100px; background: rgba(8, 3, 9, 0.75);
+      border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 14px;
+      padding: 14px; color: #fff; font-family: inherit; font-size: 1.05rem;
+      outline: none; resize: none;
     }
-    .text-answer-box:focus {
-      border-color: var(--gold-primary);
-      background: rgba(18, 6, 20, 0.9);
-      box-shadow: 0 0 16px rgba(245, 158, 11, 0.45);
-    }
-    .text-answer-box:disabled { opacity: 0.6; }
-
-    .status-text { font-size: 0.95rem; color: #fecdd3; text-align: center; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+    .text-answer-box:focus { border-color: var(--gold-primary); background: rgba(18, 6, 20, 0.9); }
 
     /* Reveal Box */
     .reveal-box {
       display: none; background: rgba(225, 29, 72, 0.1); border: 1px solid var(--border-glow);
-      border-radius: 20px; padding: 20px; margin-top: 4px;
-      box-shadow: 0 0 25px rgba(225, 29, 72, 0.25);
+      border-radius: 18px; padding: 18px; margin-top: 4px;
     }
-    .reveal-box.show { display: flex; flex-direction: column; gap: 16px; animation: fadeIn 0.45s ease; }
+    .reveal-box.show { display: flex; flex-direction: column; gap: 14px; animation: fadeIn 0.4s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    
+
     .answer-card {
-      background: rgba(12, 4, 14, 0.85); border-radius: 16px; padding: 16px 18px;
-      display: flex; flex-direction: column; gap: 8px; border-right: 5px solid var(--gold-primary);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      background: rgba(12, 4, 14, 0.85); border-radius: 14px; padding: 14px 16px;
+      display: flex; flex-direction: column; gap: 6px; border-right: 5px solid var(--gold-primary);
     }
     .answer-card.partner { border-right-color: var(--rose); }
-    .card-author { font-size: 0.9rem; font-weight: 800; color: var(--gold-light); letter-spacing: 0.3px; }
-    .card-text { font-size: 1.15rem; line-height: 1.5; color: #fff; word-break: break-word; }
+    .card-author { font-size: 0.85rem; font-weight: 800; color: var(--gold-light); }
+    .card-text { font-size: 1.1rem; line-height: 1.45; color: #fff; word-break: break-word; }
 
     /* Rating buttons */
-    .rating-container {
-      display: flex; flex-direction: column; gap: 10px; align-items: center; margin-top: 8px;
-    }
-    .rate-btn-group { display: flex; gap: 8px; width: 100%; }
+    .rate-btn-group { display: flex; gap: 8px; width: 100%; margin-top: 6px; }
     .rate-btn {
       flex: 1; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border);
-      color: #fff; font-family: inherit; font-size: 0.9rem; padding: 12px 6px;
-      border-radius: 14px; cursor: pointer; text-align: center; font-weight: 700;
-      transition: all 0.2s ease;
+      color: #fff; font-family: inherit; font-size: 0.85rem; padding: 10px 4px;
+      border-radius: 12px; cursor: pointer; text-align: center; font-weight: 700;
     }
-    .rate-btn:active { transform: scale(0.96); background: rgba(245, 158, 11, 0.3); }
 
-    /* Live Chat Section */
+    /* Live Chat & Photo upload */
     .chat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px;
+      padding: 16px; display: flex; flex-direction: column; gap: 10px;
+      backdrop-filter: blur(16px); box-shadow: 0 12px 40px rgba(0,0,0,0.7);
     }
     .chat-header {
       display: flex; justify-content: space-between; align-items: center;
       font-size: 0.95rem; font-weight: 700; color: var(--gold-light);
-      border-bottom: 1px solid rgba(245, 158, 11, 0.2);
-      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.2); padding-bottom: 8px;
     }
     .chat-messages {
-      height: 190px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 6px 4px;
-      scroll-behavior: smooth;
+      height: 200px; overflow-y: auto; display: flex; flex-direction: column;
+      gap: 10px; padding: 6px 4px; scroll-behavior: smooth;
     }
     .chat-bubble {
-      max-width: 82%;
-      padding: 10px 14px;
-      border-radius: 16px;
-      font-size: 0.95rem;
-      line-height: 1.4;
-      word-break: break-word;
-      position: relative;
+      max-width: 82%; padding: 10px 14px; border-radius: 16px; font-size: 0.95rem;
+      line-height: 1.4; word-break: break-word; position: relative;
     }
     .chat-bubble.me {
-      align-self: flex-start;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.35));
-      border: 1px solid var(--border);
-      border-top-right-radius: 4px;
-      color: #fff;
+      align-self: flex-start; background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.35));
+      border: 1px solid var(--border); border-top-right-radius: 4px; color: #fff;
     }
     .chat-bubble.partner {
-      align-self: flex-end;
-      background: linear-gradient(135deg, rgba(225, 29, 72, 0.25), rgba(136, 19, 55, 0.4));
-      border: 1px solid rgba(225, 29, 72, 0.4);
-      border-top-left-radius: 4px;
-      color: #fff;
+      align-self: flex-end; background: linear-gradient(135deg, rgba(225, 29, 72, 0.25), rgba(136, 19, 55, 0.4));
+      border: 1px solid rgba(225, 29, 72, 0.4); border-top-left-radius: 4px; color: #fff;
     }
-    .bubble-meta {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.65);
-      margin-bottom: 3px;
-      font-weight: 700;
+    .bubble-meta { font-size: 0.72rem; color: rgba(255,255,255,0.65); margin-bottom: 3px; font-weight: 700; }
+    .chat-photo-img {
+      max-width: 100%; border-radius: 10px; margin-top: 6px; display: block; border: 1px solid var(--border);
     }
-    .chat-input-bar {
-      display: flex;
-      gap: 8px;
-    }
+    .chat-input-bar { display: flex; gap: 8px; align-items: center; }
     .chat-input {
-      flex: 1;
-      background: rgba(8, 3, 9, 0.75);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: 14px;
-      padding: 12px 14px;
-      color: #fff;
-      font-family: inherit;
-      font-size: 0.95rem;
-      outline: none;
+      flex: 1; background: rgba(8, 3, 9, 0.75); border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 14px; padding: 12px 14px; color: #fff; font-family: inherit; font-size: 0.95rem; outline: none;
     }
-    .chat-input:focus {
-      border-color: var(--gold-primary);
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
-    }
-    .chat-send-btn {
-      background: var(--gold-gradient);
-      color: #111;
-      font-family: inherit;
-      font-weight: 800;
-      border: none;
-      padding: 0 16px;
-      border-radius: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
+    .photo-upload-btn {
+      background: rgba(225, 29, 72, 0.25); border: 1px solid rgba(225, 29, 72, 0.45);
+      color: #fff; padding: 10px 12px; border-radius: 14px; cursor: pointer; font-size: 1.1rem;
     }
 
     /* Buttons */
     .primary-btn {
-      background: var(--gold-gradient); color: #111; font-family: inherit; font-size: 1.1rem;
-      font-weight: 800; border: none; padding: 15px; border-radius: 16px; cursor: pointer; width: 100%;
-      box-shadow: 0 6px 24px rgba(245, 158, 11, 0.4); transition: all 0.2s ease;
+      background: var(--gold-gradient); color: #111; font-family: inherit; font-size: 1.05rem;
+      font-weight: 800; border: none; padding: 14px; border-radius: 14px; cursor: pointer; width: 100%;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
     }
     .primary-btn:active { transform: scale(0.98); }
 
     .share-btn {
       background: #25D366; color: #fff; font-family: inherit; font-size: 1rem; font-weight: 700;
-      border: none; padding: 14px; border-radius: 16px; cursor: pointer; width: 100%;
-      display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;
-      box-shadow: 0 4px 18px rgba(37, 211, 102, 0.3);
+      border: none; padding: 13px; border-radius: 14px; cursor: pointer; width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
     }
   </style>
 </head>
@@ -347,6 +292,13 @@
   </div>
 
   <div class="container">
+    <!-- Theme Switcher -->
+    <div class="theme-bar">
+      <button class="theme-btn active" onclick="setTheme(1, this)">🕯️ משי ונרות</button>
+      <button class="theme-btn" onclick="setTheme(2, this)">💋 מגע אינטימי</button>
+      <button class="theme-btn" onclick="setTheme(3, this)">🖤 צללית נועזת</button>
+    </div>
+
     <header>
       <h1>קשר של תשוקה</h1>
       <p class="subtitle">המשחק האינטימי שלכם בזמן אמת</p>
@@ -358,12 +310,15 @@
         <span class="dot green"></span>
         <span id="myNameLabel">את/ה</span>
       </div>
-      <div style="font-size:0.9rem; color:var(--gold-light); font-weight:700;">מחוברים יחד 🔥</div>
+      <div style="font-size:0.85rem; color:var(--gold-light); font-weight:700;">מחוברים יחד 🔥</div>
       <div class="player-tag">
         <span class="dot yellow" id="partnerDot"></span>
         <span id="partnerNameLabel">מחכה לו...</span>
       </div>
     </div>
+
+    <!-- Turn Indicator -->
+    <div class="turn-indicator" id="turnIndicator">התור שלך למשוך קלף! 🃏</div>
 
     <!-- Heart Compatibility Meter -->
     <div class="heart-meter">
@@ -374,67 +329,82 @@
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" id="meterFill"></div>
       </div>
-      <div style="font-size:0.85rem; color:#fecdd3;" id="meterCaption">ענו בכתב ודרגו את ההתאמה כדי להעלות את הלהבות!</div>
+      <div style="font-size:0.8rem; color:#fecdd3;" id="meterCaption">ענו ודרגו כדי להעלות את הלהבות!</div>
     </div>
 
-    <!-- Question Card -->
+    <!-- Draw Cards Buttons -->
+    <div class="card-actions-box" id="drawCardBox">
+      <button class="card-choice-btn" onclick="requestDraw('question')">
+        <span>🃏</span>
+        <span>משוך קלף שאלה</span>
+      </button>
+      <button class="card-choice-btn mission" onclick="requestDraw('mission')">
+        <span>🔥</span>
+        <span>משוך קלף משימה</span>
+      </button>
+    </div>
+
+    <!-- Active Card -->
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span class="badge" id="categoryBadge">היכרות ומסתורין</span>
-        <span style="font-size:0.85rem; color:var(--text-muted);" id="qCounter">שאלה אקראית</span>
+        <span class="badge" id="categoryBadge">קלף מוכן</span>
+        <span style="font-size:0.85rem; color:var(--text-muted);" id="qCounter">לחצו למשיכת קלף</span>
       </div>
 
-      <div class="question-text" id="questionText">טוען שאלה...</div>
+      <div class="card-content-text" id="cardContentText">בחרו האם למשוך קלף שאלה או קלף משימה נועזת 🔥</div>
 
-      <!-- Free Text Section -->
-      <div class="input-section" id="inputSection">
-        <textarea id="freeTextAns" class="text-answer-box" placeholder="כתבו את התשובה שלכם כאן בלי פילטרים..."></textarea>
+      <!-- Free Text Section (לשאלות) -->
+      <div class="input-section" id="inputSection" style="display:none;">
+        <textarea id="freeTextAns" class="text-answer-box" placeholder="כתבו את התשובה שלכם כאן..."></textarea>
         <button class="primary-btn" id="sendAnsBtn" onclick="submitFreeAnswer()">שלח/י תשובה ✍️</button>
-        <div class="status-text" id="statusWaitText" style="display:none;">תשובתך נשמרה בסתר 🤫 ממתין לתשובה שלו...</div>
+        <div class="status-text" id="statusWaitText" style="display:none; text-align:center; color:#fecdd3; font-weight:600;">
+          תשובתך נשמרה בסתר 🤫 ממתין לתשובה שלו...
+        </div>
+      </div>
+
+      <!-- Mission Done Button (למשימות) -->
+      <div id="missionSection" style="display:none; flex-direction:column; gap:10px;">
+        <button class="primary-btn" onclick="completeMission()">ביצעתי את המשימה! (שלחו תמונה בצ'אט לאישור) 📸🔥</button>
       </div>
 
       <!-- Reveal Answers Section -->
       <div class="reveal-box" id="revealBox">
-        <div style="text-align:center; font-size:1.3rem; font-weight:800; color:var(--gold-light);">התשובות נחשפו! 🔥</div>
-        
+        <div style="text-align:center; font-size:1.2rem; font-weight:800; color:var(--gold-light);">התשובות נחשפו! 🔥</div>
         <div class="answer-card">
           <div class="card-author" id="myAuthorLabel">התשובה שלי:</div>
           <div class="card-text" id="myRevealedText"></div>
         </div>
-
         <div class="answer-card partner">
           <div class="card-author" id="partnerAuthorLabel">התשובה שלו:</div>
           <div class="card-text" id="partnerRevealedText"></div>
         </div>
-
-        <!-- Rating matching -->
-        <div class="rating-container">
-          <span style="font-size:0.9rem; color:var(--text-muted);">עד כמה עפתם על התשובות זה של זה?</span>
-          <div class="rate-btn-group">
-            <button class="rate-btn" onclick="rateMatch(100)">🔥 בול הראש שלי! (+100%)</button>
-            <button class="rate-btn" onclick="rateMatch(70)">✨ מדליק מאוד (+70%)</button>
-            <button class="rate-btn" onclick="rateMatch(40)">👀 מסקרן (+40%)</button>
-          </div>
+        <div class="rate-btn-group">
+          <button class="rate-btn" onclick="rateMatch(100)">🔥 בול הראש שלי! (+100%)</button>
+          <button class="rate-btn" onclick="rateMatch(70)">✨ מדליק מאוד (+70%)</button>
+          <button class="rate-btn" onclick="rateMatch(40)">👀 מסקרן (+40%)</button>
         </div>
-
-        <button class="primary-btn" id="nextBtn" onclick="requestNextQuestion()" style="margin-top:6px;">השאלה הבאה 🎲</button>
       </div>
     </div>
 
-    <!-- Live Chat In Room -->
+    <!-- Live Chat In Room + Photo Sharing -->
     <div class="chat-card">
       <div class="chat-header">
-        <span>💬 צ'אט אינטימי בחדר</span>
-        <span style="font-size:0.75rem; color:#fecdd3;">דיבור חופשי בזמן אמת</span>
+        <span>💬 צ'אט אינטימי + הוכחת משימות</span>
+        <span style="font-size:0.75rem; color:#fecdd3;">דיבור חופשי ותמונות בזמן אמת</span>
       </div>
       <div class="chat-messages" id="chatMessages">
         <div style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin:auto;">
-          כאן תוכלו להתכתב, להגיב על התשובות ולפתח את המתח ביניכם...
+          התכתבו בחופשיות והעלו תמונות כדי להוכיח ביצוע משימות...
         </div>
       </div>
       <div class="chat-input-bar">
         <input type="text" id="chatInput" class="chat-input" placeholder="כתבו הודעה..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-        <button class="chat-send-btn" onclick="sendChatMessage()">שלח 💌</button>
+        <!-- כפתור העלאת תמונה -->
+        <label class="photo-upload-btn" title="העלו תמונה כהוכחה">
+          📷
+          <input type="file" id="photoFileInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+        </label>
+        <button class="chat-choice-btn primary-btn" style="width:auto; padding:10px 16px;" onclick="sendChatMessage()">שלח</button>
       </div>
     </div>
 
@@ -445,65 +415,64 @@
   </div>
 
   <script>
-    const allQuestions = [
-      // היכרות ומסתורין
-      { t: "מה הדבר הראשון שמשך את תשומת הלב שלך בפרופיל או בהודעות שלי?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה הדבר הראשון שאתה מסתכל עליו כשאתה רואה אישה לראשונה במציאות?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה הווייב שלך לדייט ראשון: יין במקום אינטימי וחשוך או בר מלא אנרגיה?", c: "היכרות ומסתורין", cls: "" },
-      { t: "אם היית צריך לנחש לפי ההתכתבות בינינו, איך לדעתך אני מנשקת?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה התכונה שהכי מושכת אותך באופי של מישהי ומדליקה אותך עוד לפני המראה?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה הבגד שאתה מרגיש בו הכי סקסי ומושך בעולם?", c: "היכרות ומסתורין", cls: "" },
-      { t: "איזה ריח או בושם של אישה משגע אותך לגמרי?", c: "היכרות ומסתורין", cls: "" },
-      { t: "אם היינו נפגשים עכשיו לדייט ספונטני של שעה בלבד, מה היינו עושים?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה עובר לך בראש ברגע שיש שתיקה קצרה אבל טעונה במתח בין שני אנשים?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה ההרפתקה הכי ספונטנית או מטורפת שיצא לך לעשות בלי לתכנן?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מי בדרך כלל יוזם אצלך: אתה אוהב לרדוף ולהוביל, או שאוהב שיוזמים עליך?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה המשפט או הרמז הכי חכם וסקסי שמישהי שלחה לך בהודעה?", c: "היכרות ומסתורין", cls: "" },
-      { t: "אם היית יכול לקרוא לי את המחשבות למשך 60 שניות עכשיו, מה היית רוצה לדעת?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה משהו שאסור לי בשום אופן ללבוש לדייט שלנו אם אתה רוצה להתרכז בשיחה?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה הדבר הכי נועז שאי פעם אמרת למישהי בדייט ראשון?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה בעיניך הופך נשיקה ראשונה לסרט קולנוע במקום לעוד נשיקה רגילה?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה הנשק הסודי שלך כשאתה רוצה לפתות מישהי בלי להגיד מילה?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה עמדתך לגבי סקס בדייט ראשון: זורם אם יש חיבור מטורף, או לבנות מתח?", c: "היכרות ומסתורין", cls: "" },
-      { t: "אם היינו מסיימים את הדייט בשעה 3 לפנות בוקר ברכב שלך, איזה שיר היה מתנגן?", c: "היכרות ומסתורין", cls: "" },
-      { t: "אם תהיה נשיקה בסוף הדייט – מי לדעתך ייזום אותה ראשון?", c: "היכרות ומסתורין", cls: "" },
-      { t: "מה השאלה הכי חצופה שמתחשק לך לשאול אותי עכשיו ואתה מתאפק?", c: "היכרות ומסתורין", cls: "" },
+    // מאגר שאלות
+    const questions = [
+      { t: "מה הדבר הראשון שמשך את תשומת הלב שלך בפרופיל או בהודעות שלי?", c: "היכרות ומסתורין" },
+      { t: "מה הדבר הראשון שאתה מסתכל עליו כשאתה רואה אישה לראשונה במציאות?", c: "היכרות ומסתורין" },
+      { t: "מה הווייב שלך לדייט ראשון: יין במקום אינטימי וחשוך או בר מלא אנרגיה?", c: "היכרות ומסתורין" },
+      { t: "אם היית צריך לנחש לפי ההתכתבות בינינו, איך לדעתך אני מנשקת?", c: "היכרות ומסתורין" },
+      { t: "מה הבגד שאתה מרגיש בו הכי סקסי ומושך בעולם?", c: "היכרות ומסתורין" },
+      { t: "אם היינו נפגשים עכשיו לדייט ספונטני של שעה בלבד, מה היינו עושים?", c: "היכרות ומסתורין" },
+      { t: "מה הדבר הכי נועז שאי פעם אמרת למישהי בדייט ראשון?", c: "היכרות ומסתורין" },
+      { t: "מה עמדתך לגבי סקס בדייט ראשון: זורם אם יש חיבור מטורף, או לבנות מתח?", c: "היכרות ומסתורין" },
+      { t: "אם תהיה נשיקה בסוף הדייט – מי לדעתך ייזום אותה ראשון?", c: "היכרות ומסתורין" },
+      { t: "מה השאלה הכי חצופה שמתחשק לך לשאול אותי עכשיו ואתה מתאפק?", c: "היכרות ומסתורין" },
+      { t: "מה הדבר הראשון שחשבת עליו בפעם הראשונה שראית אותי בעירום?", c: "סקס ופנטזיה" },
+      { t: "איזה בגד שלי גורם לך לרצות להוריד אותו ממני מיד?", c: "סקס ופנטזיה" },
+      { t: "מה הדבר שאני עושה במיטה שהכי מוציא אותך מדעתך?", c: "סקס ופנטזיה" },
+      { t: "אם היית יכול לבחור עכשיו תנוחה אחת שנעשה בה סקס, מה היא הייתה?", c: "סקס ופנטזיה" },
+      { t: "מה עדיף בעיניך כרגע: סקס פראי וחזק או איטי ועמוק?", c: "סקס ופנטזיה" },
+      { t: "מה המקום הכי מוזר בבית שלא ניסינו עדיין והיית רוצה שנעשה בו סקס?", c: "סקס ופנטזיה" },
+      { t: "מה עדיף: שאני אשלוט בך לחלוטין או שאתה תשלוט בי?", c: "סקס ופנטזיה" },
+      { t: "איזו דמות או תפקיד היית רוצה שאגלם במיטה רק בשבילך?", c: "סקס ופנטזיה" },
+      { t: "האם יש פנטזיה ספציפית שאתה חושב עליה כשאתה מאונן לבד?", c: "סקס ופנטזיה" },
+      { t: "איזה מקום בחוץ (רכב, חוף מבודד, טבע) הכי מדליק אותך לנסות יחד?", c: "סקס ופנטזיה" },
+      { t: "האם יש צעצוע מין שתמיד סקרן אותך לנסות ביחד ועוד לא דיברנו עליו?", c: "סקס ופנטזיה" },
+      { t: "מה הדבר הכי מלוכלך ונועז שהיית רוצה שאלחש לך באוזן תוך כדי סקס?", c: "סקס ופנטזיה" },
+      { t: "האם אתה אוהב משיכות שיער, ספאנקים בישבן או נשיכות בזמן האקט?", c: "סקס ופנטזיה" },
+      { t: "איזה אזור בגוף שלך הכי רגיש למגע שאנשים בדרך כלל מפספסים?", c: "אינטימיות וחיבור" },
+      { t: "איך נראה המשחק המקדים המושלם מבחינתך?", c: "אינטימיות וחיבור" },
+      { t: "מה גורם לך להרגיש לגמרי בנוח להשתחרר במיטה?", c: "אינטימיות וחיבור" },
+      { t: "מה גורם לך להרגיש הכי נחשק/ת ונאהב/ת?", c: "אינטימיות וחיבור" }
+    ];
 
-      // סקס ופנטזיה
-      { t: "מה הדבר הראשון שחשבת עליו בפעם הראשונה שראית אותי בעירום?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "איזה בגד שלי גורם לך לרצות להוריד אותו ממני מיד?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה הדבר שאני עושה במיטה שהכי מוציא אותך מדעתך?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "אם היית יכול לבחור עכשיו תנוחה אחת שנעשה בה סקס, מה היא הייתה?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה עדיף בעיניך כרגע: סקס פראי וחזק או איטי ועמוק?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה המקום הכי מוזר בבית שלא ניסינו עדיין והיית רוצה שנעשה בו סקס?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה עדיף: שאני אשלוט בך לחלוטין או שאתה תשלוט בי?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "איזו דמות או תפקיד היית רוצה שאגלם במיטה רק בשבילך?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "האם יש פנטזיה ספציפית שאתה חושב עליה כשאתה מאונן לבד?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה דעתך שנקשור אחד את השני או נשתמש בכיסוי עיניים כשאחד חסר אונים?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "איזה מקום בחוץ (רכב, חוף מבודד, טבע) הכי מדליק אותך לנסות יחד?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "האם יש צעצוע מין שתמיד סקרן אותך לנסות ביחד ועוד לא דיברנו עליו?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה הדבר הכי מלוכלך ונועז שהיית רוצה שאלחש לך באוזן תוך כדי סקס?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "האם אתה אוהב משיכות שיער, ספאנקים בישבן או נשיכות בזמן האקט?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה דעתך על סקס מול מראה גדולה כדי שנוכל לראות הכל?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "אם הייתי נותנת לך שליטה מלאה עליי לשעה שלמה ללא התנגדות, מה היית עושה?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה דעתך על לנסות סקס אנאלי או משחקים באזור הזה?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "איזה סוד מיני עליך עדיין לא סיפרת לי עד היום?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "מה היית רוצה שאעשה לך עכשיו במשך 5 דקות שלמות בלי שתזוז בכלל?", c: "סקס ופנטזיה", cls: "fnt" },
-      { t: "איך אתה רוצה שהערב הזה יסתיים במיטה?", c: "סקס ופנטזיה", cls: "fnt" },
-
-      // אינטימיות וחיבור
-      { t: "איזה אזור בגוף שלך הכי רגיש למגע שאנשים בדרך כלל מפספסים?", c: "אינטימיות וחיבור", cls: "int" },
-      { t: "מה הנשיקה הכי בלתי נשכחת שהייתה לך עד היום?", c: "אינטימיות וחיבור", cls: "int" },
-      { t: "איך נראה המשחק המקדים המושלם מבחינתך?", c: "אינטימיות וחיבור", cls: "int" },
-      { t: "מה המגע שלי שהכי מהר גורם לך לגירוי חזק?", c: "אינטימיות וחיבור", cls: "int" },
-      { t: "מה גורם לך להרגיש לגמרי בנוח להשתחרר במיטה?", c: "אינטימיות וחיבור", cls: "int" },
-      { t: "מה גורם לך להרגיש הכי נחשק/ת ונאהב/ת?", c: "אינטימיות וחיבור", cls: "int" },
-      { t: "מה החלק האהוב עליך ברגעים שאחרי הסקס?", c: "אינטימיות וחיבור", cls: "int" },
-      { t: "מה הדבר הכי משמעותי שהופך סקס מסתם מגע פיזי לחוויה עמוקה?", c: "אינטימיות וחיבור", cls: "int" }
+    // מאגר 100 משימות נועזות ומגוונות
+    const missions = [
+      "צלם/י עכשיו סלפי חושני ומפתה ושלח/י ישירות בצ'אט להוכחה!",
+      "שלח/י בצ'אט תמונה של שפתיים או חלק גוף אחר שאת/ה הכי אוהב/ת בעצמך.",
+      "שלח/י הודעה קולית בצ'אט (או בוואטסאפ) בלחישה של מה שהיית עושה לי עכשיו.",
+      "תאר/י ב-3 שורות בדיוק את הפנטזיה הכי פרועה שרצית לנסות הלילה.",
+      "צלם/י תמונה של מה שאת/ה לובש/ת ברגע זה ממש ושלח/י בצ'אט.",
+      "כתוב/כתבי לי את הכינוי הכי מלוכלך שהיית רוצה שאקרא לך במיטה.",
+      "שלח/י תמונה של הבגד התחתון שלך (או תרמוז/תרמזי מה יש מתחת).",
+      "תאר/י בדיוק איך תיראה הנשיקה הראשונה שלנו כשניפגש.",
+      "שלח/י לי שיר ביוטיוב שגורם לך לחשוב עלי במובן מיני.",
+      "תוריד/י פריט לבוש אחד עכשיו ושלח/י רמז בצ'אט מה הורדת!",
+      "כתוב/כתבי 3 פקודות שהיית נותן/ת לי לעשות אם הייתי עכשיו בחדר שלך.",
+      "צלם/י תמונה של המיטה שלך עכשיו ושלח/י בצ'אט עם הכיתוב: 'מחכה לך'.",
+      "תבטיח/י הבטחה סקסית אחת שחייבים לקיים בדייט הקרוב.",
+      "שלח/י בצ'אט אימוג'י שמסכם במדויק את המצב של התשוקה שלך כרגע.",
+      "תעצום/תעצמי עיניים ל-30 שניות ותדמיין/י את המגע שלי בגב שלך – ואז תכתוב/תכתבי איך זה הרגיש.",
+      "שלח/י בצ'אט תמונה של מבט פלרטטני למצלמה.",
+      "ספר/י על מקום אסור או ציבורי שבו תרצה/י שנתנשק בפעם הבאה.",
+      "צלם/י את הצוואר שלך מקרוב ושלח/י כהוכחה.",
+      "תכתוב/תכתבי מה הדבר הראשון שתיגע/י בו בגוף שלי כשנהיה לבד.",
+      "שלח/י הודעה של מילה אחת בלבד שמתארת את החשק שלך כרגע."
     ];
 
     let myName = localStorage.getItem('cg_my_name') || '';
     let partnerName = 'בן הזוג';
+    let currentTurn = '';
     let myWrittenAns = null;
     let partnerWrittenAns = null;
     let totalScore = 0;
@@ -518,11 +487,9 @@
     }
 
     const shareUrl = window.location.origin + window.location.pathname + '?room=' + roomId;
-    document.getElementById('whatsappShareBtn').href = `https://api.whatsapp.com/send?text=${encodeURIComponent('בוא נשחק במשחק השאלות והתשוקה שלנו בזמן אמת 🔥: ' + shareUrl)}`;
+    document.getElementById('whatsappShareBtn').href = `https://api.whatsapp.com/send?text=${encodeURIComponent('בוא נשחק במשחק השאלות והמשימות האינטימי שלנו 🔥: ' + shareUrl)}`;
 
-    if (myName) {
-      document.getElementById('nameInput').value = myName;
-    }
+    if (myName) document.getElementById('nameInput').value = myName;
 
     const topic = `couplegame/room/${roomId}`;
     const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt', { keepalive: 60 });
@@ -543,19 +510,32 @@
       } else if (data.type === 'ack_join') {
         partnerName = data.name;
         updatePartnerUI(true);
+      } else if (data.type === 'draw_card') {
+        handleCardDrawn(data.cardType, data.content, data.category, data.sender);
       } else if (data.type === 'answer') {
         partnerWrittenAns = data.text;
         checkBothSubmitted();
-      } else if (data.type === 'next_q') {
-        applyNewQuestion(data.qIndex);
       } else if (data.type === 'score_update') {
         totalScore = data.totalScore;
         roundsCount = data.roundsCount;
         updateScoreBar();
       } else if (data.type === 'chat_msg') {
-        renderChatBubble(data.sender, data.text, 'partner', data.time);
+        renderChatBubble(data.sender, data.text, 'partner', data.time, data.image);
       }
     });
+
+    function setTheme(num, btn) {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const root = document.documentElement;
+      if (num === 1) {
+        root.style.setProperty('--theme-bg-img', "url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop')");
+      } else if (num === 2) {
+        root.style.setProperty('--theme-bg-img', "url('https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1200&auto=format&fit=crop')");
+      } else {
+        root.style.setProperty('--theme-bg-img', "url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200&auto=format&fit=crop')");
+      }
+    }
 
     function joinGame() {
       const input = document.getElementById('nameInput').value.trim();
@@ -567,8 +547,6 @@
       document.getElementById('loginScreen').style.display = 'none';
 
       announcePresence();
-      const randomIdx = Math.floor(Math.random() * allQuestions.length);
-      applyNewQuestion(randomIdx);
     }
 
     function announcePresence() {
@@ -582,23 +560,53 @@
       if (connected) dot.className = 'dot green';
     }
 
-    function applyNewQuestion(index) {
-      const q = allQuestions[index % allQuestions.length];
-      document.getElementById('questionText').innerText = q.t;
+    function requestDraw(type) {
+      let content = '', category = '';
+      if (type === 'question') {
+        const q = questions[Math.floor(Math.random() * questions.length)];
+        content = q.t;
+        category = q.c;
+      } else {
+        content = missions[Math.floor(Math.random() * missions.length)];
+        category = "משימה נועזת 🔥";
+      }
+
+      handleCardDrawn(type, content, category, myName);
+
+      client.publish(topic, JSON.stringify({
+        type: 'draw_card',
+        cardType: type,
+        content: content,
+        category: category,
+        sender: myName
+      }));
+    }
+
+    function handleCardDrawn(cardType, content, category, drawerName) {
+      document.getElementById('cardContentText').innerText = content;
       const badge = document.getElementById('categoryBadge');
-      badge.innerText = q.c;
-      badge.className = 'badge ' + q.cls;
-      document.getElementById('qCounter').innerText = `שאלה #${(index % allQuestions.length) + 1}`;
+      badge.innerText = category;
+      badge.className = 'badge ' + (cardType === 'mission' ? 'mission' : '');
+      document.getElementById('qCounter').innerText = `נמשך ע"י ${drawerName}`;
 
       myWrittenAns = null;
       partnerWrittenAns = null;
-      const txt = document.getElementById('freeTextAns');
-      txt.value = '';
-      txt.disabled = false;
-      document.getElementById('sendAnsBtn').style.display = 'block';
-      document.getElementById('statusWaitText').style.display = 'none';
       document.getElementById('revealBox').classList.remove('show');
-      document.getElementById('inputSection').style.display = 'flex';
+
+      if (cardType === 'question') {
+        document.getElementById('inputSection').style.display = 'flex';
+        document.getElementById('missionSection').style.display = 'none';
+        const txt = document.getElementById('freeTextAns');
+        txt.value = '';
+        txt.disabled = false;
+        document.getElementById('sendAnsBtn').style.display = 'block';
+        document.getElementById('statusWaitText').style.display = 'none';
+      } else {
+        document.getElementById('inputSection').style.display = 'none';
+        document.getElementById('missionSection').style.display = 'flex';
+      }
+
+      document.getElementById('turnIndicator').innerText = `התור של ${drawerName === myName ? partnerName : myName} למשוך קלף! 🃏`;
     }
 
     function submitFreeAnswer() {
@@ -630,6 +638,12 @@
       }
     }
 
+    function completeMission() {
+      confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+      rateMatch(100);
+      alert('אלופים! אל תשכחו להעלות תמונת הוכחה בצ\'אט למטה 📸🔥');
+    }
+
     function rateMatch(points) {
       roundsCount++;
       totalScore += points;
@@ -649,45 +663,61 @@
       document.getElementById('meterFill').style.width = percent + '%';
     }
 
-    function requestNextQuestion() {
-      const nextIdx = Math.floor(Math.random() * allQuestions.length);
-      client.publish(topic, JSON.stringify({
-        type: 'next_q',
-        qIndex: nextIdx,
-        sender: myName
-      }));
-      applyNewQuestion(nextIdx);
-    }
-
-    /* Live Chat Functions */
-    function sendChatMessage() {
+    /* Live Chat & Photo Sharing */
+    function sendChatMessage(imageB64 = null) {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
-      if (!text) return;
+      if (!text && !imageB64) return;
 
       const timeStr = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
-      renderChatBubble(myName, text, 'me', timeStr);
+      renderChatBubble(myName, text, 'me', timeStr, imageB64);
 
       client.publish(topic, JSON.stringify({
         type: 'chat_msg',
         sender: myName,
         text: text,
-        time: timeStr
+        time: timeStr,
+        image: imageB64
       }));
 
       input.value = '';
     }
 
-    function renderChatBubble(sender, text, type, timeStr) {
+    function renderChatBubble(sender, text, type, timeStr, imageB64 = null) {
       const box = document.getElementById('chatMessages');
       const bubble = document.createElement('div');
       bubble.className = `chat-bubble ${type}`;
-      bubble.innerHTML = `
-        <div class="bubble-meta">${sender} • ${timeStr || ''}</div>
-        <div>${text}</div>
-      `;
+      let content = `<div class="bubble-meta">${sender} • ${timeStr || ''}</div>`;
+      if (text) content += `<div>${text}</div>`;
+      if (imageB64) content += `<img class="chat-photo-img" src="${imageB64}" alt="Photo Proof" />`;
+      bubble.innerHTML = content;
       box.appendChild(bubble);
       box.scrollTop = box.scrollHeight;
+    }
+
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // כיווץ התמונה להעברה מהירה ב-WebSocket
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 600;
+          let w = img.width, h = img.height;
+          if (w > h && w > maxDim) { h *= maxDim / w; w = maxDim; }
+          else if (h > maxDim) { w *= maxDim / h; h = maxDim; }
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.65);
+          sendChatMessage(compressed);
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
     }
   </script>
 </body>
